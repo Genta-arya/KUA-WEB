@@ -22,9 +22,9 @@ const Username = () => {
     <div className="bg-hijau-muda text-black py-5 px-4 md:mt-12 mt-8 rounded-md border-hijau-muda-2 border flex items-center justify-between">
       <div>
         <p className="font-bold md:text-xl text-sm">Selamat Datang</p>
-        <div className="flex items-center gap-2 mt-2">
+        <div className="flex items-center gap-1 mt-2">
           <p className="text-gray-700 text-xs font-bold">Hai,</p>
-          <p className="font-bold text-xs text-hijau-tua">M Gentha Arya Pratama</p>
+          <p className="font-bold text-sm text-hijau-tua">M Gentha Arya Pratama</p>
         </div>
       </div>
       <div className="flex items-center gap-2 text-xs">

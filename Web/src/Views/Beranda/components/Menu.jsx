@@ -44,7 +44,7 @@ const Menu = () => {
           <span className="text-xs font-bold text-gray-500">Panduan</span>
         </Link>
         <Link
-          to="#"
+          to="https://maps.app.goo.gl/6TKk9jNRrkfGdZw7A"
           className="flex flex-col items-center py-4 border rounded shadow-lg hover:shadow-hijau-tua transition-colors ease-in"
         >
           <FaMapMarkerAlt size={40} className="text-hijau-tua mb-2" />
@@ -52,8 +52,6 @@ const Menu = () => {
         </Link>
       </div>
       <Bantuan />
-
-      
     </>
   );
 };

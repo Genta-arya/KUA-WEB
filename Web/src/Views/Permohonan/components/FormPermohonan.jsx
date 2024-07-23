@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../../../components/Loading";
 import schedule from "../../JadwalNikah/Data";
 import { kelurahanData } from "../DataLurah";
-import { formatDate } from "../../../lib/Utils/Utils";
+import { isDateTimeAvailable } from "../../../lib/Utils/Utils";
 
 const FormPermohonan = () => {
   const [status, setStatus] = useState("belum"); // Default to 'Belum Cerai'
@@ -22,33 +22,7 @@ const FormPermohonan = () => {
   const navigate = useNavigate();
   const { isLoading, setLoading } = useLoading();
 
-  const isDateTimeAvailable = (date, time) => {
-    // Helper function to convert time to minutes since midnight
-    const timeToMinutes = (timeStr) => {
-      const [hours, minutes] = timeStr.split(":").map(Number);
-      return hours * 60 + minutes;
-    };
-
-    // Convert input time to minutes
-    const newTimeInMinutes = timeToMinutes(time);
-
-    // Define the time range for checking (e.g., 1 hour range)
-    const timeRange = 60; // 60 minutes for a 1-hour range
-
-    // Check for conflicts within the same date and specified time range
-    for (let entry of schedule) {
-      if (entry.date === date) {
-        const existingTimeInMinutes = timeToMinutes(entry.time);
-
-        // Check if new time overlaps with existing times within the specified range
-        if (Math.abs(newTimeInMinutes - existingTimeInMinutes) < timeRange) {
-          return false; // Time is not available
-        }
-      }
-    }
-
-    return true; // Time is available
-  };
+ 
 
   const handleStatusChange = (e) => {
     setStatus(e.target.value);
@@ -88,7 +62,7 @@ const FormPermohonan = () => {
     toast.success("Permohonan Berhasil", {
       onAutoClose: () => {
         setLoading(false);
-        // navigate("/beranda");
+        navigate("/beranda");
       },
     });
 
