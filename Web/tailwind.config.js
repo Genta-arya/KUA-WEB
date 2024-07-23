@@ -9,6 +9,7 @@ export default {
       colors: {
         "hijau-muda": "#CAFFFB",
         "hijau-tua": "#0FA588",
+        "hijau-muda-2": "#0CFAFF",
       },
     },
   },

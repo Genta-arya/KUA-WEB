@@ -12,7 +12,7 @@ const Form = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const { isLoading, setLoading } = useLoading();
- const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleLogin = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -20,19 +20,20 @@ const Form = () => {
     console.log("Email:", email);
     console.log("Password:", password);
     console.log("Remember Me:", rememberMe);
+   
     toast.success("Login Berhasil", {
       closeButton: true,
       position: "top-right",
       onAutoClose: () => {
         setLoading(false);
-        navigate("/beranda")
+        navigate("/beranda");
       },
     });
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-black">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full md:max-w-lg max-w-xs">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full md:max-w-lg max-w-[26rem]">
         <div className="flex justify-center mb-6">
           <img src={icon} alt="icon" className="w-24 h-24 rounded-full" />
         </div>
@@ -40,7 +41,7 @@ const Form = () => {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block text-sm font-semibold text-gray-500 dark:text-gray-300"
             >
               Email
             </label>
@@ -57,7 +58,7 @@ const Form = () => {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block text-sm font-semibold text-gray-500 dark:text-gray-300"
             >
               Kata sandi
             </label>
@@ -85,7 +86,6 @@ const Form = () => {
               <input
                 type="checkbox"
                 id="remember-me"
-                required
                 checked={rememberMe}
                 onChange={() => setRememberMe(!rememberMe)}
               />
@@ -105,13 +105,13 @@ const Form = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full disabled:bg-white disabled:border-hijau-tua disabled:py-3  flex font-bold justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm  text-white bg-hijau-tua hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-hijau-tua"
+              className="w-full disabled:bg-white disabled:border-hijau-tua disabled:py-3  flex font-bold justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm  text-white bg-hijau-tua hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-hijau-tua"
             >
               {isLoading ? <Loading /> : "Masuk"}
             </button>
           </div>
           <div className="text-center mt-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-gray-500 font-bold  dark:text-gray-400">
               Tidak punya akun?{" "}
             </p>
 

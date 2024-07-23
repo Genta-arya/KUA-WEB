@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import icon from "../../../assets/Images/icon.jpeg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import useLoading from "../../../lib/Zustand/LoadingStore";
+import Loading from "../../../components/Loading";
 
 const FormRegister = () => {
   const [username, setUsername] = useState("");
@@ -11,23 +14,37 @@ const FormRegister = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
-
+  const { isLoading, setLoading } = useLoading();
+  const navigate = useNavigate();
   const handleRegister = (e) => {
     e.preventDefault();
     // Handle registration logic here
     if (password !== confirmPassword) {
-      console.log("Passwords do not match");
+      toast.info("Konfirmasi Password Salah");
       return;
     }
+    if (!agreeTerms) {
+      toast.info("Anda harus menyetujui syarat dan ketentuan");
+      return;
+    }
+
+    setLoading(true);
     console.log("Username:", username);
     console.log("Email:", email);
     console.log("Password:", password);
     console.log("Agree Terms:", agreeTerms);
+
+    toast.success("Register Berhasil", {
+      onAutoClose: () => {
+        setLoading(false);
+        navigate("/beranda");
+      },
+    });
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-black">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full md:max-w-lg max-w-xs">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full md:max-w-lg max-w-[26rem]">
         <div className="flex justify-center mb-6">
           <img src={icon} alt="icon" className="w-24 h-24 rounded-full" />
         </div>
@@ -35,7 +52,7 @@ const FormRegister = () => {
           <div>
             <label
               htmlFor="username"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block text-sm font-medium text-gray-500 dark:text-gray-300"
             >
               Username
             </label>
@@ -52,7 +69,7 @@ const FormRegister = () => {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block text-sm font-medium text-gray-500 dark:text-gray-300"
             >
               Email
             </label>
@@ -69,7 +86,7 @@ const FormRegister = () => {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block text-sm font-medium text-gray-500 dark:text-gray-300"
             >
               Kata sandi
             </label>
@@ -95,7 +112,7 @@ const FormRegister = () => {
           <div>
             <label
               htmlFor="confirm-password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block text-sm font-medium text-gray-500 dark:text-gray-300"
             >
               Konfirmasi Kata sandi
             </label>
@@ -125,15 +142,12 @@ const FormRegister = () => {
                 id="agree-terms"
                 checked={agreeTerms}
                 onChange={() => setAgreeTerms(!agreeTerms)}
-                required
+       
               />
               <span></span>
-              <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+              <span className="ml-2 text-sm text-gray-500 dark:text-gray-300">
                 Saya menyetujui{" "}
-                <a
-                  href="#"
-                  className="text-hijau-tua hover:text-hijau-tua"
-                >
+                <a href="#" className="text-hijau-tua hover:text-hijau-tua">
                   syarat & ketentuan
                 </a>
               </span>
@@ -142,14 +156,17 @@ const FormRegister = () => {
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="w-full flex font-bold justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm text-white bg-hijau-tua hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-hijau-tua"
+              disabled={isLoading}
+              className="w-full flex disabled:bg-white disabled:border-hijau-tua disabled:py-3 font-bold justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm text-white bg-hijau-tua hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-hijau-tua"
             >
-              Daftar
+              {isLoading  ? <Loading /> : "Daftar"}
+        
             </button>
           </div>
           <div className="text-center mt-4">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Sudah punya akun?{" "}
+              
               <Link
                 to={"/"}
                 className="font-medium text-hijau-tua hover:text-hijau-tua"

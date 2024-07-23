@@ -1,10 +1,12 @@
-import React from 'react'
-import { HashLoader } from 'react-spinners'
+import React from "react";
+import { HashLoader } from "react-spinners";
 
 const Loading = () => {
   return (
-    <HashLoader size={16} color="#0FA588" />
-  )
-}
+    <div className="flex justify-center items-center">
+      <HashLoader size={16} color="#0FA588" />
+    </div>
+  );
+};
 
-export default Loading
+export default Loading;
