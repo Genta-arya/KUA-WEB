@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+
+
+
+body {
+  font-family: 'Nunito';
+  font-weight:500;
+}
+
+
+.custom-checkbox {
+  @apply relative flex items-center cursor-pointer text-white;
+}
+
+.custom-checkbox input[type="checkbox"] {
+  @apply absolute opacity-0 w-0 h-0;
+}
+
+.custom-checkbox input[type="checkbox"] + span {
+  @apply block w-5 h-5 border-2 border-hijau-tua rounded-md transition-colors duration-200 text-white;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + span {
+  @apply bg-hijau-tua border-hijau-tua;
+}
+
