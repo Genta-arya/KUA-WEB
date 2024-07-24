@@ -6,7 +6,7 @@ const MainSchedule = () => {
   return (
     <div>
         <Header slug={"/beranda"} title={"Daftar Jadwal Nikah"} />
-      <div className="mx-auto max-w-md py-4">
+      <div className="mx-auto max-w-[90%] py-4">
         <ScheduleList />
       </div>
     </div>

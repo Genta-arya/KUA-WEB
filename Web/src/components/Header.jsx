@@ -10,7 +10,7 @@ const Header = ({ title , slug }) => {
   };
 
   return (
-    <div className="flex items-center p-3 bg-gray-100 border-b border-gray-300">
+    <div className="flex items-center p-3 bg-gray-100 border-b border-gray-300 lg:px-20">
       <button onClick={handleBack} className="mr-2 p-2 rounded hover:bg-gray-200">
         <FaArrowLeft size={16} className="text-gray-600" />
       </button>

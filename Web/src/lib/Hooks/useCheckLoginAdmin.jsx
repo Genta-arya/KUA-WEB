@@ -4,7 +4,7 @@ import { HandleCheckLogin } from "../../Service/API/Authentikasi/AuthService";
 import useLoading from "../Zustand/LoadingStore";
 import { useNavigate } from "react-router-dom";
 
-const useCheckLogin = () => {
+const useCheckLoginAdmin = () => {
   const {
     id_user,
     id,
@@ -28,8 +28,8 @@ const useCheckLogin = () => {
     setLoading(true);
     try {
       const response = await HandleCheckLogin(tokens);
-      if (response.data.role === "admin") {
-        navigate("/admin/beranda");
+      if (response.data.role === "user" || response.data.role === "pegawai") {
+        navigate("/beranda");
       }
       setLoggedIn(
         response.data.id,
@@ -80,4 +80,4 @@ const useCheckLogin = () => {
   };
 };
 
-export default useCheckLogin;
+export default useCheckLoginAdmin;

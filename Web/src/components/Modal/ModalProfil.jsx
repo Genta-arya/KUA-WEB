@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import authStore from "../../lib/Zustand/AuthStore";
+import { HandleUpdateProfil } from "../../Service/API/Profil/ProfilService";
 
 const ModalProfil = () => {
-  const [isOpen, setIsOpen] = useState(true); // Modal is open by default
+  const { username, id, isModal, setModal } = authStore();
 
-  const closeModal = () => {
-    setIsOpen(false);
-  };
+ 
+
+  const [name, setName] = useState("");
+  const [gender, setGender] = useState("");
+  const [phone, setPhone] = useState("");
+  const [nik, setNik] = useState("");
 
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.8 },
@@ -16,7 +21,7 @@ const ModalProfil = () => {
   const transition = { duration: 0.3 };
 
   useEffect(() => {
-    if (isOpen) {
+    if (!isModal) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
@@ -25,11 +30,29 @@ const ModalProfil = () => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isOpen]);
+  }, [isModal]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await HandleUpdateProfil({
+        idUser: id,
+        nama_lengkap: name,
+        j_kelamin: gender,
+        noHp: phone,
+        nik,
+      });
+
+      window.location.reload();
+    } catch (error) {
+      // Handle error
+      console.error("Failed to update profile:", error);
+    }
+  };
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {!isModal && (
         <motion.div
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
           variants={modalVariants}
@@ -39,15 +62,32 @@ const ModalProfil = () => {
           transition={transition}
         >
           <motion.div
-            className="bg-white p-6 rounded shadow-lg max-w-md w-full"
+            className="bg-white p-6 rounded shadow-lg max-w-[95%] w-full"
             variants={modalVariants}
           >
-            <h2 className="text-sm font-bold mb-1">Lengkapi Profil</h2>
+            <h2 className="text-base font-bold mb-1">Lengkapi Profil</h2>
             <p className="mb-4 text-xs text-gray-500">
-              Sebelum menggunakan layanan yang ada di sistem kami, harap
-              lengkapi profil Anda.
+              Sebelum menggunakan layanan yang ada di sistem kami, wajib untuk
+              lengkapi profil dibawah ini.
             </p>
-            <form>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label
+                  className="block text-sm font-semibold mb-1"
+                  htmlFor="username"
+                >
+                  Username
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  readOnly
+                  value={username}
+                  required
+                  placeholder="Username"
+                  className="w-full border text-sm border-gray-300 rounded px-2 py-2 focus:ring-2 focus:ring-hijau-tua"
+                />
+              </div>
               <div className="mb-4">
                 <label
                   className="block text-sm font-semibold mb-1"
@@ -59,6 +99,9 @@ const ModalProfil = () => {
                   type="text"
                   id="name"
                   placeholder="Nama lengkap"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="w-full border text-sm border-gray-300 rounded px-2 py-2 focus:ring-2 focus:ring-hijau-tua"
                 />
               </div>
@@ -71,6 +114,9 @@ const ModalProfil = () => {
                 </label>
                 <select
                   id="gender"
+                  value={gender}
+                  required
+                  onChange={(e) => setGender(e.target.value)}
                   className="w-full text-sm border border-gray-300 rounded px-2 py-2 focus:ring-2 focus:ring-hijau-tua"
                 >
                   <option value="">Pilih jenis kelamin</option>
@@ -88,8 +134,11 @@ const ModalProfil = () => {
                 <input
                   type="tel"
                   id="phone"
-                  max={12}
+                  maxLength={12}
+                  required
                   placeholder="Nomor telepon"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   className="w-full text-sm border border-gray-300 rounded px-2 py-2 focus:ring-2 focus:ring-hijau-tua"
                 />
               </div>
@@ -103,26 +152,21 @@ const ModalProfil = () => {
                 <input
                   type="text"
                   id="nik"
-                  max={16}
+                  required
+                  maxLength={16}
                   placeholder="Nomor Induk Kependudukan"
+                  value={nik}
+                  onChange={(e) => setNik(e.target.value)}
                   className="w-full border text-sm border-gray-300 rounded px-2 py-2 focus:ring-2 focus:ring-hijau-tua"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
                 <button
-                  type="button"
-                  onClick={closeModal}
+                  type="submit"
                   className="bg-hijau-tua w-full text-white px-4 py-2 rounded-md text-sm hover:opacity-95 transition-colors"
                 >
                   Simpan
-                </button>
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="border border-hijau-tua w-full text-hijau-tua  px-4 py-2 rounded-md text-sm hover:opacity-90 transition-colors"
-                >
-                  Tutup
                 </button>
               </div>
             </form>

@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import useLoading from "../../../lib/Zustand/LoadingStore";
 import Loading from "../../../components/Loading";
+import { HandlingRegister } from "../../../Service/API/Authentikasi/AuthService";
 
 const FormRegister = () => {
   const [username, setUsername] = useState("");
@@ -16,7 +17,7 @@ const FormRegister = () => {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const { isLoading, setLoading } = useLoading();
   const navigate = useNavigate();
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     // Handle registration logic here
     if (password !== confirmPassword) {
@@ -29,22 +30,34 @@ const FormRegister = () => {
     }
 
     setLoading(true);
-    console.log("Username:", username);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Agree Terms:", agreeTerms);
 
-    toast.success("Register Berhasil", {
-      onAutoClose: () => {
-        setLoading(false);
-        navigate("/beranda");
-      },
-    });
+    try {
+      console.log("Username:", username);
+      console.log("Email:", email);
+      console.log("Password:", password);
+      console.log("Agree Terms:", agreeTerms);
+      await HandlingRegister({
+        username,
+        email,
+        password,
+      });
+
+      toast.success("Register Berhasil", {
+        onAutoClose: () => {
+          setLoading(false);
+          navigate("/beranda");
+        },
+      });
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-black">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full md:max-w-lg max-w-[26rem]">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full md:max-w-2xl max-w-[94%]">
         <div className="flex justify-center mb-6">
           <img src={icon} alt="icon" className="w-24 h-24 rounded-full" />
         </div>
@@ -142,7 +155,6 @@ const FormRegister = () => {
                 id="agree-terms"
                 checked={agreeTerms}
                 onChange={() => setAgreeTerms(!agreeTerms)}
-       
               />
               <span></span>
               <span className="ml-2 text-sm text-gray-500 dark:text-gray-300">
@@ -159,14 +171,12 @@ const FormRegister = () => {
               disabled={isLoading}
               className="w-full flex disabled:bg-white disabled:border-hijau-tua disabled:py-3 font-bold justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm text-white bg-hijau-tua hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-hijau-tua"
             >
-              {isLoading  ? <Loading /> : "Daftar"}
-        
+              {isLoading ? <Loading /> : "Daftar"}
             </button>
           </div>
           <div className="text-center mt-4">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Sudah punya akun?{" "}
-              
               <Link
                 to={"/"}
                 className="font-medium text-hijau-tua hover:text-hijau-tua"

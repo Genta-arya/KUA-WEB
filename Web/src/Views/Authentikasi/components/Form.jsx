@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import useLoading from "../../../lib/Zustand/LoadingStore";
 import Loading from "../../../components/Loading";
+import { HandlingLogin } from "../../../Service/API/Authentikasi/AuthService";
 
 const Form = () => {
   const [email, setEmail] = useState("");
@@ -13,27 +14,44 @@ const Form = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const { isLoading, setLoading } = useLoading();
   const navigate = useNavigate();
-  const handleLogin = (e) => {
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Handle login logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Remember Me:", rememberMe);
-   
-    toast.success("Login Berhasil", {
-      closeButton: true,
-      position: "top-right",
-      onAutoClose: () => {
-        setLoading(false);
-        navigate("/beranda");
-      },
-    });
+
+    try {
+      const response = await HandlingLogin({
+        email,
+        password,
+      });
+
+      toast.success("Login Berhasil", {
+        closeButton: true,
+        position: "top-right",
+        duration: 1500,
+        onAutoClose: () => {
+          localStorage.setItem("token", response.token);
+          if (response.data.user.role === "admin") {
+            navigate("/admin/beranda");
+          } else {
+            navigate("/beranda");
+          }
+        },
+      });
+    } catch (error) {
+      if (error.response.status === 400) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Internal Server Error");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-black">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full md:max-w-lg max-w-[26rem]">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full md:max-w-2xl max-w-[94%] ">
         <div className="flex justify-center mb-6">
           <img src={icon} alt="icon" className="w-24 h-24 rounded-full" />
         </div>
@@ -115,9 +133,11 @@ const Form = () => {
               Tidak punya akun?{" "}
             </p>
 
-            <div className="border-hijau-tua hover:bg-slate-100 transition-colors rounded-lg border w-full py-2 px-4 mt-4 text-hijau-tua font-bold cursor-pointer">
-              <Link to="/register">Daftar</Link>
-            </div>
+            <Link to="/register">
+              <div className="border-hijau-tua hover:bg-slate-100 transition-colors rounded-lg border w-full py-2 px-4 mt-4 text-hijau-tua font-bold cursor-pointer">
+                <p>Daftar</p>
+              </div>
+            </Link>
           </div>
         </form>
       </div>
