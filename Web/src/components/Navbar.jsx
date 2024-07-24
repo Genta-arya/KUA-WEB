@@ -3,7 +3,6 @@ import { IoIosNotificationsOutline } from "react-icons/io";
 import icon from "../assets/Images/icon.jpeg";
 import profil from "../assets/Images/dummy.jpeg";
 import { io } from "socket.io-client";
-import useLoading from "../lib/Zustand/LoadingStore";
 import { FaHistory } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
@@ -52,14 +51,14 @@ const Navbar = ({ userId }) => {
         </div>
         <div className="flex items-center space-x-4 relative ">
           <div className="flex flex-row-reverse items-center gap-3">
-            <div className="text-hijau-tua">
+            <div className="text-hijau-tua hidden md:block lg:block">
               <Link to={"/riwayat"}>
                 <FaHistory />
               </Link>
             </div>
             <button
               className="text-hijau-tua dark:text-gray-300 relative"
-              onClick={toggleModal} // Menambahkan event handler untuk toggle modal
+              onClick={toggleModal}
             >
               <IoIosNotificationsOutline size={24} />
               {notificationCount > 0 && (
@@ -70,19 +69,16 @@ const Navbar = ({ userId }) => {
             </button>
           </div>
 
-          {isModalOpen && ( // Menampilkan modal jika isModalOpen true
+          {isModalOpen && (
             <div
-            className={`absolute top-full right-0 mt-2 w-48 lg:w-72 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-300 dark:border-gray-700 z-10 ${
-              notificationCount < 1 ? "h-auto" : "max-h-[300px] overflow-auto"
-            }`}
-          >
+              className={`absolute top-full right-0 mt-2 w-48 lg:w-72 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-300 dark:border-gray-700 z-10 ${
+                notificationCount < 1 ? "h-auto" : "max-h-[300px] overflow-auto"
+              }`}
+            >
               <div className="flex justify-between items-center px-4 py-2">
                 <h1 className="text-xs font-bold">Pemberitahuan</h1>
 
-                <button
-                  className=""
-                  onClick={toggleModal} // Menambahkan event handler untuk menutup modal
-                >
+                <button className="" onClick={toggleModal}>
                   ×
                 </button>
               </div>

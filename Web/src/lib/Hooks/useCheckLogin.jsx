@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import authStore from "./../Zustand/AuthStore";
 import { HandleCheckLogin } from "../../Service/API/Authentikasi/AuthService";
 import useLoading from "../Zustand/LoadingStore";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const useCheckLogin = () => {
   const {
@@ -22,7 +22,7 @@ const useCheckLogin = () => {
   } = authStore();
   const { isLoading, setLoading } = useLoading();
   const navigate = useNavigate();
-
+ const {pathname} = useLocation()
   const tokens = localStorage.getItem("token");
   const checkLogin = async () => {
     setLoading(true);
@@ -30,7 +30,9 @@ const useCheckLogin = () => {
       const response = await HandleCheckLogin(tokens);
       if (response.data.role === "admin") {
         navigate("/admin/beranda");
-      }
+      } 
+
+
       setLoggedIn(
         response.data.id,
         response.data.profil.id,

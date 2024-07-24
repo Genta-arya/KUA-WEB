@@ -3,10 +3,6 @@ import {
   HandleChangeStatusPermohonan,
   HandleGetPermohonan,
 } from "../../../../../Service/API/Permohonan/PermohonanService";
-import {
-  IoCheckmarkCircleOutline,
-  IoCloseCircleOutline,
-} from "react-icons/io5";
 import TableData from "./TableData";
 import LoadingGlobal from "../../../../../components/LoadingGlobal";
 import { io } from "socket.io-client";
@@ -15,6 +11,9 @@ const AdminPengajuan = ({ userId, role }) => {
   const [permohonanData, setPermohonanData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [keterangan, setKeterangan] = useState("");
 
   const fetchData = async () => {
     try {
@@ -34,6 +33,12 @@ const AdminPengajuan = ({ userId, role }) => {
   }, [userId, role]);
 
   const handleStatusChange = async (id, newStatus, uid) => {
+    if (newStatus === "ditolak") {
+      setSelectedItem(id);
+      setIsModalOpen(true);
+      return;
+    }
+
     const socketIo = io("http://localhost:5001", {
       query: { userId: uid },
     });
@@ -57,6 +62,29 @@ const AdminPengajuan = ({ userId, role }) => {
     }
   };
 
+  const handleSubmitKeterangan = async () => {
+    if (!selectedItem || !keterangan) return;
+
+    const socketIo = io("http://localhost:5001", {
+      query: { userId },
+    });
+
+    try {
+      await HandleChangeStatusPermohonan({
+        id: selectedItem,
+        status: "ditolak",
+        userId,
+        keterangan,
+      });
+      socketIo.emit("getNotif", { userId, refresh: true });
+      fetchData();
+      setIsModalOpen(false);
+      setKeterangan("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   if (loading) {
     return <LoadingGlobal />;
   }
@@ -66,11 +94,40 @@ const AdminPengajuan = ({ userId, role }) => {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <TableData
         handleStatusChange={handleStatusChange}
         permohonanData={permohonanData}
       />
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-lg">
+            <h2 className="text-xl font-semibold mb-4">Keterangan ditolak</h2>
+            <textarea
+              value={keterangan}
+              onChange={(e) => setKeterangan(e.target.value)}
+              className="w-full border border-gray-300 p-2 mb-4 rounded"
+              rows="4"
+              placeholder="Masukkan keterangan..."
+            />
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={handleSubmitKeterangan}
+                className="bg-hijau-tua text-white px-4 py-2 rounded hover:opacity-90"
+              >
+                Submit
+              </button>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
