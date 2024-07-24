@@ -35,9 +35,8 @@ model User {
   profil      Profil?   @relation(fields: [profilId], references: [id])
   profilId    String?   @unique
   berkas      Berkas[]
-  payment     payment[]
-}
 
+}
 model Berkas {
   id            String   @id @default(cuid())
   nama_lengkap  String
@@ -55,15 +54,19 @@ model Berkas {
   userId        String
   ket           String?  @db.Text
   user          User     @relation(fields: [userId], references: [id])
+  payments      Payment[] // Menambahkan relasi ke Payment
 }
 
-model payment {
-  id          String   @id @default(cuid())
-  status_bayar  Boolean  @default(false)
-  paymentLink String?
-  userId      String? 
-  user        User?    @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
+model Payment {
+  id           String   @id @default(cuid())
+  status_bayar String
+  order_id     String @unique
+  va_number    String
+  biaya        String
+  berkasId      String
+  berkas        Berkas   @relation(fields: [berkasId], references: [id])
+  createdAt    DateTime @default(now())
+  expiry_time  DateTime
 }
 
 model Notif {

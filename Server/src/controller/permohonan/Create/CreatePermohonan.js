@@ -15,11 +15,10 @@ export const CreatePermohonan = async (req, res) => {
     userId,
   } = req.body;
 
-  const files = req.files; // File uploads dari Multer
+  const files = req.files;
   const io = req.io;
   console.log(req.body);
 
-  // Check if all required fields are provided
   if (
     !name ||
     !gender ||
@@ -32,7 +31,6 @@ export const CreatePermohonan = async (req, res) => {
     !kelurahan ||
     !userId
   ) {
-    // Delete uploaded files if any
     if (files) {
       Object.values(files)
         .flat()
@@ -49,7 +47,6 @@ export const CreatePermohonan = async (req, res) => {
     });
   }
 
-  // Check if suratCerai file is provided if status_cerai is "sudah"
   if (status_cerai === "sudah" && (!files || !files.suratCerai)) {
     // Delete uploaded files if any
     if (files) {
@@ -70,7 +67,6 @@ export const CreatePermohonan = async (req, res) => {
 
   let fileUrl, suratCeraiUrl;
   if (files && files.file) {
-    // URL file if stored locally
     fileUrl = `${process.env.BASE_URL_DEV}/file/${files.file[0].filename}`;
   }
   if (files && files.suratCerai) {
@@ -98,10 +94,10 @@ export const CreatePermohonan = async (req, res) => {
       },
     });
 
-    const notificationMessage = "Pemberkasan akan diproses dan ditinjau terlebih dahulu";
+    const notificationMessage =
+      "Pemberkasan akan diproses dan ditinjau terlebih dahulu";
     io.to(userId).emit("permohonanStatus", { message: notificationMessage });
 
-  
     await prisma.notif.create({
       data: {
         id_user: userId,

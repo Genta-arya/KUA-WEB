@@ -1,3 +1,4 @@
+import axios from "axios";
 import prisma from "../../../config/Prisma.js";
 
 export const getHistoryPermohonan = async (req, res) => {
@@ -28,28 +29,14 @@ export const getHistoryPermohonan = async (req, res) => {
           tanggal_akad: true,
           status_berkas: true,
           jam_akad: true,
-          user: {
-            select: {
-              payment: {
-                select: {
-                  id: true,
-                  paymentLink: true,
-                  status_bayar: true,
-                  createdAt: true,
-                },
-              },
-            },
-          },
+          berkas: true,
+          payments: true,
         },
       });
     } else {
       data = await prisma.berkas.findMany({
         include: {
-          user: {
-            select: {
-              payment: true,
-            },
-          },
+          payments: true,
         },
       });
     }
@@ -62,6 +49,60 @@ export const getHistoryPermohonan = async (req, res) => {
     console.log(error);
     return res.status(500).json({
       message: "Internal Server Error",
+    });
+  }
+};
+
+export const Payment = async (req, res) => {
+  const { id } = req.body;
+
+  console.log(id);
+
+  if (!id) {
+    return res.status(400).json({ message: "id and status are required" });
+  }
+
+  try {
+    // Ambil detail pembayaran dari database
+    const payment = await prisma.payment.findFirst({
+      where: { order_id: id },
+    });
+
+    if (!payment) {
+      return res.status(404).json({ message: "Payment not found" });
+    }
+
+    const response = await axios.get(
+      `https://api.sandbox.midtrans.com/v2/${id}/status`,
+      {
+        headers: {
+          Authorization: `Basic U0ItTWlkLXNlcnZlci0xeUxxRlNmbS1XdkVhWGVBWTJfekZTelM6`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const { status_code, transaction_status } = response.data;
+
+    if (status_code === "200") {
+      await prisma.payment.update({
+        where: { order_id: id },
+        data: {
+          status_bayar: transaction_status,
+        },
+      });
+    }
+
+    return res.status(200).json({
+      message: "Payment status updated successfully",
+      data: response.data,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message,
     });
   }
 };
