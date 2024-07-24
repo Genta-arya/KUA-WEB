@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Profil {
+  id           String @id @default(cuid())
+  nama_lengkap String
+  j_kelamin    String
+  noHp         String
+  nik          String
+  user         User?
+}
+
+model User {
+  id          String    @id @default(cuid())
+  username    String
+  email       String
+  password    String
+  token       String?
+  role        String    @default("user")
+  status      Boolean   @default(false)
+  isCompleted Boolean   @default(false)
+  otp         String?
+  profil      Profil?   @relation(fields: [profilId], references: [id])
+  profilId    String?   @unique
+  berkas      Berkas[]
+  payment     payment[]
+}
+
+model Berkas {
+  id            String   @id @default(cuid())
+  nama_lengkap  String
+  j_kelamin     String
+  nik           String
+  noHp          String
+  status_cerai  String
+  status_berkas String   @default("pending")
+  tanggal_akad  DateTime
+  jam_akad      String
+  berkas        String
+  berkas_cerai  String?
+  kelurahan     String
+  alamat        String
+  userId        String
+  ket           String?  @db.Text
+  user          User     @relation(fields: [userId], references: [id])
+}
+
+model payment {
+  id          String   @id @default(cuid())
+  status_bayar  Boolean  @default(false)
+  paymentLink String?
+  userId      String? 
+  user        User?    @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model Notif {
+  id      String  @id @default(cuid())
+  id_user String
+  message String
+  status  Boolean @default(false)
+}
