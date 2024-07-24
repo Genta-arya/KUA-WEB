@@ -101,7 +101,7 @@ export const CreatePermohonan = async (req, res) => {
     const notificationMessage = "Pemberkasan akan diproses dan ditinjau terlebih dahulu";
     io.to(userId).emit("permohonanStatus", { message: notificationMessage });
 
-    // Save notification to the database
+  
     await prisma.notif.create({
       data: {
         id_user: userId,

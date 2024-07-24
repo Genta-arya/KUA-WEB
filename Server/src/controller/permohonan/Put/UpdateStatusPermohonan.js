@@ -5,7 +5,7 @@ export const updateStatusPermohonan = async (req, res) => {
   const { status, userId } = req.body; // Status baru yang diterima dari request
   const io = req.io;
 
-  console.log(io)
+ 
  
   try {
     // Validasi status yang diterima
