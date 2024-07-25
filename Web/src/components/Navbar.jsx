@@ -37,6 +37,7 @@ const Navbar = ({ userId }) => {
 
   const handleNotificationItemClick = (id) => {
     socketIo.emit("getNotif", { notifId: id, status: true, userId });
+  
   };
 
   const toggleModal = () => {

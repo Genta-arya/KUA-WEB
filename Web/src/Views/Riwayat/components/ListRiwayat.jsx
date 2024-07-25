@@ -5,7 +5,7 @@ import { formatDate, formatRupiah, generatePDF, generateRequestLetterPDF } from 
 import LoadingGlobal from "../../../components/LoadingGlobal";
 import PaymentModal from "../../../components/Modal/PaymentModal";
 import { HandlePayment } from "../../../Service/API/Payment/PaymentService";
-
+import { io } from "socket.io-client"; 
 const ListRiwayat = ({ userId, role, username }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,6 +22,20 @@ const ListRiwayat = ({ userId, role, username }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const socket = io("http://localhost:5001"); // Ganti dengan URL server Anda
+
+    socket.on("refresh", (data) => {
+      if (data.refresh) {
+        fetchData();
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     if (userId || role) {

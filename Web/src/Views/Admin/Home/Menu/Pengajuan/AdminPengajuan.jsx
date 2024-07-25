@@ -29,21 +29,28 @@ const AdminPengajuan = ({ userId, role }) => {
   };
 
   useEffect(() => {
+    const socketIo = io("http://localhost:5001", {});
     if (userId || role) {
       fetchData();
+    }
+    if (userId || role) {
+      socketIo.on("paymentStatusUpdated", (data) => {
+        if (data.refresh) {
+          fetchData();
+        }
+      });
     }
   }, [userId, role]);
 
   const handleStatusChange = async (id, newStatus, uid) => {
+    const socketIo = io("http://localhost:5001", {
+      query: { userId: uid },
+    });
     if (newStatus === "ditolak") {
       setSelectedItem(id);
       setIsModalOpen(true);
       return;
     }
-
-    const socketIo = io("http://localhost:5001", {
-      query: { userId: uid },
-    });
 
     setPermohonanData((prevData) =>
       prevData.map((item) =>
@@ -58,6 +65,7 @@ const AdminPengajuan = ({ userId, role }) => {
         userId: uid,
       });
       socketIo.emit("getNotif", { userId: uid, refresh: true });
+      socketIo.emit("refresh", { userId: uid, refresh: true });
       fetchData();
     } catch (error) {
       console.log(error);
@@ -65,7 +73,6 @@ const AdminPengajuan = ({ userId, role }) => {
   };
 
   const handleSubmitKeterangan = async () => {
-
     setLoading(true);
     if (!selectedItem || !keterangan) return;
 
@@ -88,7 +95,7 @@ const AdminPengajuan = ({ userId, role }) => {
     } catch (error) {
       console.log(error);
       localStorage.removeItem("token");
-      toast.error("Server Error")
+      toast.error("Server Error");
     } finally {
       setLoading(false);
     }
@@ -103,7 +110,7 @@ const AdminPengajuan = ({ userId, role }) => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full flex justify-center">
       <TableData
         handleStatusChange={handleStatusChange}
         permohonanData={permohonanData}
@@ -137,7 +144,7 @@ const AdminPengajuan = ({ userId, role }) => {
           </div>
         </div>
       )}
-      <Toaster richColors position="bottom-right"/>
+      <Toaster richColors position="bottom-right" />
     </div>
   );
 };

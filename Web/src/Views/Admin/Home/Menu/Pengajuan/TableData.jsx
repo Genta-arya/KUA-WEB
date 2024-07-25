@@ -4,13 +4,10 @@ import { formatDate } from "../../../../../lib/Utils/Utils";
 
 const TableData = ({ permohonanData, handleStatusChange }) => {
   return (
-    <div className="overflow-x-auto max-w-full w-full ">
+    <div className="overflow-x-auto max-w-[95%] w-full  mt-8">
       <table className="text-sm divide-y divide-gray-200 border border-gray-300">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Nama
-            </th>
             <th className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
               NIK
             </th>
@@ -55,9 +52,6 @@ const TableData = ({ permohonanData, handleStatusChange }) => {
             const isSettlement = statusBayar === "settlement";
             return (
               <tr key={item.id}>
-                <td className="px-3 py-2 whitespace-nowrap">
-                  {item.nama_lengkap}
-                </td>
                 <td className="px-3 py-2 whitespace-nowrap">{item.nik}</td>
                 <td className="px-3 py-2 whitespace-nowrap">{item.noHp}</td>
                 <td className="px-3 py-2 whitespace-nowrap">{item.alamat}</td>
@@ -98,7 +92,7 @@ const TableData = ({ permohonanData, handleStatusChange }) => {
                       handleStatusChange(item.id, e.target.value, item.userId)
                     }
                     className="bg-white border border-gray-300 rounded p-1"
-                    disabled={isSettlement}
+                    disabled={isSettlement || item.status_berkas === "ditolak"}
                   >
                     <option value="pending">Pending</option>
                     <option value="setuju">Setuju</option>
@@ -109,7 +103,13 @@ const TableData = ({ permohonanData, handleStatusChange }) => {
                 <td className="px-3 py-2 whitespace-nowrap">
                   {formatDate(item.tanggal_akad)}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap">
+                <td
+                  className={`px-3 py-2 whitespace-nowrap font-bold ${
+                    statusBayar === "settlement"
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
                   {statusBayar === "settlement" ? "Lunas" : statusBayar}
                 </td>
               </tr>
