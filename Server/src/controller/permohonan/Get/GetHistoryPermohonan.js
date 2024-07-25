@@ -29,6 +29,8 @@ export const getHistoryPermohonan = async (req, res) => {
           tanggal_akad: true,
           status_berkas: true,
           jam_akad: true,
+          ket: true,
+
           berkas: true,
           payments: true,
         },
