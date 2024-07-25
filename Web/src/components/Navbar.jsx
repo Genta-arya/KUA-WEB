@@ -44,8 +44,8 @@ const Navbar = ({ userId }) => {
   };
 
   return (
-    <nav className="bg-white dark:bg-gray-800 p-4">
-      <div className="flex items-center justify-between max-w-md m md:max-w-3xl mx-auto">
+    <nav className="bg-white dark:bg-gray-800 p-4 md:px-6">
+      <div className="flex items-center justify-between max-w-md m md:max-w-3xl mx-auto lg:max-w-[70%]">
         <div className="flex items-center space-x-4 ">
           <img src={icon} alt="Logo" className="w-8 h-8 rounded-full " />
         </div>
@@ -102,13 +102,15 @@ const Navbar = ({ userId }) => {
             </div>
           )}
           <div className="hidden md:block lg:block">
-            <button className="text-gray-700 dark:text-gray-300 flex items-center space-x-2">
-              <img
-                src={profil}
-                alt="Profile"
-                className="w-10 h-10 rounded-full border p-1"
-              />
-            </button>
+            <Link to={"/akun"}>
+              <button className="text-gray-700 dark:text-gray-300 flex items-center space-x-2">
+                <img
+                  src={profil}
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full border p-1"
+                />
+              </button>
+            </Link>
           </div>
         </div>
       </div>

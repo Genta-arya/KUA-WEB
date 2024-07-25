@@ -6,10 +6,7 @@ import authStore from "../../../lib/Zustand/AuthStore";
 import { toast } from "sonner";
 
 const menuItems = [
-  { icon: "👤", text: "Profil Saya", slug: "/akun/profil" },
-  { icon: "🔒", text: "Ubah Kata Sandi", slug: "/akun/katasandi" },
   { icon: "📜", text: "Riwayat Permohonan", slug: "/riwayat" },
-  { icon: "⚙️", text: "Tentang Kami", slug: "/tentang" },
 ];
 
 const MenuProfil = () => {
@@ -17,7 +14,7 @@ const MenuProfil = () => {
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-   await HandleLogout(localStorage.getItem("token"));
+      await HandleLogout(localStorage.getItem("token"));
       localStorage.clear();
       navigate("/");
       logout();

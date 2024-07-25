@@ -55,7 +55,7 @@ const PaymentModal = ({ isOpen, onClose, payment }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-[95%]">
+      <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-[95%] lg:max-w-[50%]">
         <h2 className="text-lg font-bold mb-4">Detail Pembayaran</h2>
         <div className="mb-4">
           <p className="font-semibold">Keperluan</p>

@@ -14,7 +14,7 @@ const MainBeranda = () => {
     <main>
       <ModalProfil />
       <Navbar userId={id_user} />
-      <div className=" max-w-[90%] md:max-w-3xl mx-auto">
+      <div className=" max-w-[90%] md:max-w-3xl mx-auto lg:max-w-[70%]">
         <Username />
         <Menu />
       </div>

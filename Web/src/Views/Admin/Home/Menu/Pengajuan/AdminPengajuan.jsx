@@ -6,6 +6,7 @@ import {
 import TableData from "./TableData";
 import LoadingGlobal from "../../../../../components/LoadingGlobal";
 import { io } from "socket.io-client";
+import { toast, Toaster } from "sonner";
 
 const AdminPengajuan = ({ userId, role }) => {
   const [permohonanData, setPermohonanData] = useState([]);
@@ -16,6 +17,7 @@ const AdminPengajuan = ({ userId, role }) => {
   const [keterangan, setKeterangan] = useState("");
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const response = await HandleGetPermohonan({ userId, role });
       setPermohonanData(response.data);
@@ -63,6 +65,8 @@ const AdminPengajuan = ({ userId, role }) => {
   };
 
   const handleSubmitKeterangan = async () => {
+
+    setLoading(true);
     if (!selectedItem || !keterangan) return;
 
     const socketIo = io("http://localhost:5001", {
@@ -76,12 +80,17 @@ const AdminPengajuan = ({ userId, role }) => {
         userId,
         keterangan,
       });
+      toast.success("Status Diperbarui");
       socketIo.emit("getNotif", { userId, refresh: true });
       fetchData();
       setIsModalOpen(false);
       setKeterangan("");
     } catch (error) {
       console.log(error);
+      localStorage.removeItem("token");
+      toast.error("Server Error")
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,7 +112,7 @@ const AdminPengajuan = ({ userId, role }) => {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-lg">
-            <h2 className="text-xl font-semibold mb-4">Keterangan ditolak</h2>
+            <h2 className="text-xl font-bold mb-4">Keterangan ditolak</h2>
             <textarea
               value={keterangan}
               onChange={(e) => setKeterangan(e.target.value)}
@@ -120,7 +129,7 @@ const AdminPengajuan = ({ userId, role }) => {
               </button>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-opacity-80"
               >
                 Cancel
               </button>
@@ -128,6 +137,7 @@ const AdminPengajuan = ({ userId, role }) => {
           </div>
         </div>
       )}
+      <Toaster richColors position="bottom-right"/>
     </div>
   );
 };

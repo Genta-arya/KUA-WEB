@@ -6,14 +6,14 @@ import BottomNavigasi from "../../components/BottomNavigasi";
 import LoadingGlobal from "../../components/LoadingGlobal";
 
 const MainRiwayat = () => {
-  const { id_user, role , isLoading  } = useCheckLogin();
+  const { id_user, role , isLoading , username  } = useCheckLogin();
 
   if (isLoading) return <LoadingGlobal />;
   return (
     <div>
       <Header title={"Riwayat Pengajuan"} slug={"/beranda"} />
       <div className="max-w-[90%] mx-auto pb-8">
-        <ListRiwayat userId={id_user} role={role} />
+        <ListRiwayat userId={id_user} role={role} username={username} />
       </div>
     </div>
   );

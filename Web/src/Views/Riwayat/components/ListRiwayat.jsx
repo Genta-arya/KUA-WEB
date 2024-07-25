@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { HandleGetPermohonan } from "../../../Service/API/Permohonan/PermohonanService";
 import useLoading from "../../../lib/Zustand/LoadingStore";
-import { formatDate, formatRupiah } from "../../../lib/Utils/Utils";
+import { formatDate, formatRupiah, generatePDF, generateRequestLetterPDF } from "../../../lib/Utils/Utils";
 import LoadingGlobal from "../../../components/LoadingGlobal";
 import PaymentModal from "../../../components/Modal/PaymentModal";
 import { HandlePayment } from "../../../Service/API/Payment/PaymentService";
 
-const ListRiwayat = ({ userId, role }) => {
+const ListRiwayat = ({ userId, role, username }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPayment, setSelectedPayment] = useState(null); // State untuk data pembayaran
@@ -27,7 +27,7 @@ const ListRiwayat = ({ userId, role }) => {
     if (userId || role) {
       fetchData();
     }
-  }, [userId, role]);
+  }, [userId, role, username]);
 
   const openModal = (payment) => {
     setSelectedPayment(payment);
@@ -52,15 +52,24 @@ const ListRiwayat = ({ userId, role }) => {
     }
   };
 
+
   if (loading) return <LoadingGlobal />;
 
   return (
     <div className="mt-4">
-      <ul>
+      <ul className="lg:grid lg:grid-cols-2 gap-2">
         {data.map((item, index) => (
           <li
             key={index}
-            className="flex justify-between items-center p-4 mb-2 rounded-lg shadow-md border-l-8 border-hijau-tua"
+            className={`flex justify-between items-center p-4 mb-2 rounded-lg shadow-md border-l-8  ${
+              item.status_berkas === "pending"
+                ? "border-orange-500 "
+                : item.status_berkas === "ditolak"
+                ? "border-red-500"
+                : item.status_berkas === "setuju"
+                ? "border-hijau-tua"
+                : ""
+            }`}
           >
             <div className="w-full">
               <div className="border-b w-full">
@@ -128,22 +137,26 @@ const ListRiwayat = ({ userId, role }) => {
                   </>
                 )}
 
-                {item.payments[0]?.status_bayar === "settlement" && item.status_berkas === "setuju" && (
-                  <>
-                    <div className="flex justify-center mt-4 bg-hijau-tua text-white rounded-md text-sm font-bold py-1">
-                      <p>Pembayaran Lunas</p>
-                    </div>
+                {item.payments[0]?.status_bayar === "settlement" &&
+                  item.status_berkas === "setuju" && (
+                    <>
+                      <div className="flex justify-center mt-4 bg-hijau-tua text-white rounded-md text-sm font-bold py-1">
+                        <p>Pembayaran Lunas</p>
+                      </div>
 
-                    <div className="flex justify-between mt-2 gap-2">
-                      <button className="w-full bg text-xs border border-hijau-tua py-1 rounded-md">
-                        Cetak Bukti Bayar
-                      </button>
-                      <button className="w-full text-xs border-hijau-tua py-1 rounded-md border">
-                        Cetak Permohonan
-                      </button>
-                    </div>
-                  </>
-                )}
+                      <div className="flex justify-between mt-2 gap-2">
+                        <button
+                          className="w-full bg text-xs border border-hijau-tua py-1 rounded-md"
+                          onClick={() => generatePDF(item , username)}
+                        >
+                          Cetak Bukti Bayar
+                        </button>
+                        <button className="w-full text-xs border-hijau-tua py-1 rounded-md border" onClick={() => generateRequestLetterPDF(item , username)}>
+                          Cetak Permohonan
+                        </button>
+                      </div>
+                    </>
+                  )}
 
                 {item.payments[0]?.status_bayar === "cancel" && (
                   <>
@@ -154,12 +167,24 @@ const ListRiwayat = ({ userId, role }) => {
                 )}
                 {item.payments[0]?.status_bayar === "expire" && (
                   <>
-                    <p>test</p>
+                    <div className="flex justify-center mt-4 bg-gray-500 text-white rounded-md text-sm font-bold py-1">
+                      <p>Transaksi dibatalkan</p>
+                    </div>
                   </>
                 )}
                 {item.payments[0]?.status_bayar === "failure" && (
+                   <>
+                   <div className="flex justify-center mt-4 bg-gray-500 text-white rounded-md text-sm font-bold py-1">
+                     <p>Transaksi dibatalkan</p>
+                   </div>
+                 </>
+                )}
+
+                {item.ket && (
                   <>
-                    <p>test</p>
+                    <div className="flex justify-center mt-4 bg-red-500 text-white rounded-md text-sm font-bold py-1 px-2">
+                      <p className="">{item.ket}</p>
+                    </div>
                   </>
                 )}
               </div>

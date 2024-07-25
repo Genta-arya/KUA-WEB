@@ -27,12 +27,13 @@ export const HandleGetPermohonan = async ({ userId, role }) => {
   }
 };
 
-export const HandleChangeStatusPermohonan = async ({ status, userId, id }) => {
+export const HandleChangeStatusPermohonan = async ({ status, userId, id , keterangan }) => {
    
   try {
     const response = await AxiosInstace.put(`/permohonan/data/${id}/status`, {
       userId,
       status,
+      keterangan,
     });
     return response.data;
   } catch (error) {

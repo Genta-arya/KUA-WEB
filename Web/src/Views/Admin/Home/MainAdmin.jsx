@@ -25,12 +25,15 @@ const MainAdmin = () => {
   if (isLoading) return <LoadingGlobal />;
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen ">
       <Sidebar />
-      <div className="flex-1 flex flex-col ">
+   
+        <div>
         <Navbar username={username} role={role} />
-        <main className="flex-1 p-4 ">{renderView()}</main>
-      </div>
+
+        <main className="flex p-4 ">{renderView()}</main>
+        </div>
+     
     </div>
   );
 };
