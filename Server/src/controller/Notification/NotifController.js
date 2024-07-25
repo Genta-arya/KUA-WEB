@@ -1,13 +1,12 @@
 import prisma from "../../config/Prisma.js";
 
 export const getNotif = async (socket, io, data) => {
-  const { userId, status, notifId, refresh } = data || {}; // Ambil data dari parameter
+  const { userId, status, notifId, refresh } = data || {};
 
   let notif;
 
   try {
     if (status === true) {
-      // Periksa status dan notifId
       await prisma.notif.updateMany({
         where: {
           id: notifId,
@@ -18,7 +17,6 @@ export const getNotif = async (socket, io, data) => {
       });
     }
 
-    // Ambil notifikasi terbaru untuk user
     if (userId) {
       notif = await prisma.notif.findMany({
         where: {
@@ -36,7 +34,6 @@ export const getNotif = async (socket, io, data) => {
       });
     }
 
-    // Emit notifications to the specific user
     io.to(userId).emit("notif", {
       status: 200,
       data: notif,
@@ -49,3 +46,5 @@ export const getNotif = async (socket, io, data) => {
     });
   }
 };
+
+

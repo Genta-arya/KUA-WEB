@@ -9,6 +9,8 @@ import AuthRouter from "./src/route/Auth/AuthRouter.js";
 import { Server } from "socket.io";
 import PermohonanRouter from "./src/route/Permohonan/PermohonanRouter.js";
 import { getNotif } from "./src/controller/Notification/NotifController.js";
+import PaymentRouter from "./src/route/Payment/PaymentRouter.js";
+import { Triger } from "./src/RealtimeHandler/Socket.js";
 
 dotenv.config();
 const app = express();
@@ -34,6 +36,10 @@ io.on("connection", (socket) => {
   socket.on("getNotif", (data) => {
    
     getNotif(socket, io, data);
+  });
+
+  socket.on("refresh", (data) => {
+    Triger(data);
   });
 
   socket.on("disconnect", () => {});
@@ -66,10 +72,12 @@ app.use(
   })
 );
 app.use("/file", express.static(path.resolve("file")));
-
+app.use('/api/v1/payment', PaymentRouter)
 app.use("/api/v1/auth", AuthRouter);
 app.use("/api/v1/permohonan", PermohonanRouter);
 
 httpServer.listen(port, () => {
   console.log("Server running on port " + port);
 });
+
+export {io}
